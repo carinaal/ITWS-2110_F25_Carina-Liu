@@ -16,7 +16,7 @@ stuck: had a bit of trouble on the formatting. I wanted a left bar on the side t
 - wanted to change the font, so I imported a font family
 
 9/18
-- In my HTML file, I needed to do some research to refresh my memory on the tags, and how to format. Had to use the HTML file validator to find errors and fix invalid tags. ex: remvoing an invalid <i> tag
+- In my HTML file, I needed to do some research to refresh my memory on the tags, and how to format. Had to use the HTML file validator to find errors and fix invalid tags. ex: remvoing an invalid <i></i> tag
 - validated my CSS and HTML file, and fixed any errors
 
 

@@ -1,0 +1,188 @@
+/* ---------- Page base + variables (scoped) ---------- */
+body.liuc17{
+  --sidebar-w: 300px;
+  --content-pad: 32px 40px;
+
+  margin: 0; 
+  font-family: "Lato", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  background: #f9f9f9;
+  color: #333;
+  line-height: 1.6;
+}
+
+/*Fill the entire page height*/
+html, body.liuc17 { height: 100%; }
+
+
+/* Text styles for headings and name */
+.liuc17 h1, .liuc17 h2, .liuc17 h3, .liuc17 .name{
+  font-family: "Oswald", "Lato", sans-serif;
+  letter-spacing: .02em;
+}
+
+/* Big name in the sidebar */
+.liuc17 .name{
+  display: inline-block;
+  margin-top: 8px;
+  font-weight: 700;
+  font-size: 2rem;
+  color: #fff;
+}
+
+/* Section headings on the right column */
+.liuc17 h2{
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  color: #444;
+  margin: 0 0 10px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 5px;
+}
+
+/* Small subtitle line under the name */
+.liuc17 .title{
+  margin: 6px 0 6px;
+  display: inline-block;
+  text-align: center;
+  max-width: 23ch;
+  color: rgba(255,255,255,.75);
+  font-weight: 600;
+}
+
+
+/* ---------- Layout shell ---------- */
+.liuc17 .resume-wrap{
+  max-width: none;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+/* Fixed sidebar on the left */
+.liuc17 .sidebar{
+  position: fixed;
+  top: 0; left: 0;
+  width: var(--sidebar-w);     /* kept in sync with .content margin-left */
+  height: 100vh;               /* full viewport height */
+  overflow-y: auto;            /* sidebar can scroll if it grows long */
+  background: #4a4e69;         /* purple tone */
+  color: #f4f3ee;
+  padding: 28px 24px 32px;
+  box-sizing: border-box;      /* padding included in width */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  box-shadow: inset -1px 0 0 rgba(0,0,0,.06);
+  z-index: 10;
+}
+
+/* Right content area: independent vertical scrolling */
+.liuc17 .content{
+  margin-left: var(--sidebar-w); /* starts exactly after the sidebar */
+  min-height: 100vh;
+  height: 100vh;                 /* becomes the scroll container */
+  overflow-y: auto;
+  background: #f5f4f2;
+  padding: var(--content-pad);
+}
+
+/* Remove any centered-box constraints from the shared stylesheet for this page */
+.liuc17 main, .liuc17 footer{
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+
+/* ---------- Sidebar elements ---------- */
+/* Headshot */
+.liuc17 .avatar{
+  margin-top: 70px;   /* pushes image down to match your reference */
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Divider line under the name */
+.liuc17 .sb-rule{
+  width: 100%;
+  border: 0;
+  border-top: 2px solid rgba(255,255,255,.25);
+  margin: 12px 0 14px;
+}
+
+/* Compact contact block (hCard-friendly) */
+.liuc17 .contact-mini{
+  width: 100%;
+  font-size: .95rem;
+  color: rgba(255,255,255,.9);
+}
+.liuc17 .contact-mini .line{
+  display: flex;
+  gap: 8px;
+  margin: 6px 0;
+}
+.liuc17 .contact-mini .label{
+  color: rgba(255,255,255,.65);
+  min-width: 78px;   /* keeps labels neatly aligned */
+}
+.liuc17 .contact-mini a.email{
+  color: #cfe0ff;
+  text-decoration: none;
+}
+.liuc17 .contact-mini a.email:hover{
+  text-decoration: underline;
+}
+
+
+/* ---------- Right-column content styles ---------- */
+/* Section spacing */
+.liuc17 section{ margin-bottom: 25px; }
+
+/* Lists used for Education/Experience */
+.liuc17 .list{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.liuc17 .list li{ margin: 12px 0 18px; }
+.liuc17 .list li strong{ color: #222; }
+
+/* Skill “tags” */
+.liuc17 .tags{
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.liuc17 .tags li{
+  padding: 6px 10px;
+  background: #f0f3ff;
+  border: 1px solid #dfe5ff;
+  border-radius: 999px;
+  font-size: .9rem;
+}
+
+
+/* ---------- Responsive (stacked) ---------- */
+@media (max-width: 860px){
+  .liuc17 .sidebar{
+    position: static;
+    width: auto;
+    height: auto;
+    box-shadow: none;
+  }
+  .liuc17 .content{
+    margin-left: 0;
+    height: auto;
+    min-height: 0;
+    padding: 24px 16px;
+  }
+}

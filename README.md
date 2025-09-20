@@ -1,8 +1,10 @@
 # ITWS-2110_F25_Carina-Liu
 9/19/25
-Carina Liu
+
 
 ITWS 2110 LAB 1 - Work Log
+
+
 9/16
  - created a neat filepath to ensure that html files are organized and easily accessible. I made sure that the group page index.html file was outside, and then individual work and respective files are organized neatly in folders
 

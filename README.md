@@ -21,6 +21,8 @@ stuck: had a bit of trouble on the formatting. I wanted a left bar on the side t
 
 
 Sources:
+
+
 https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Content_categories
 
 

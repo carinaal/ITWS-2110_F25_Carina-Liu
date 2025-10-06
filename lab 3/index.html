@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Troy Weather & Space Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>🌍 Troy Weather & Space 🚀</h1>
+            <p id="greeting"></p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="dashboard">
+            <!-- Weather Section (Left) -->
+            <section class="weather-section">
+                <h2>Current Weather in Troy, NY</h2>
+                <div id="weather-loading" class="loading">Loading weather data...</div>
+                <div id="weather-error" class="error" style="display: none;"></div>
+                
+                <div id="weather-content" style="display: none;">
+                    <div class="weather-main">
+                        <img id="weather-icon" src="" alt="Weather icon">
+                        <div class="temperature">
+                            <span id="temp" class="temp-value">--</span>
+                            <span class="temp-unit">°F</span>
+                        </div>
+                        <p id="weather-description" class="description">--</p>
+                    </div>
+
+                    <div class="weather-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Feels Like:</span>
+                            <span id="feels-like">--°F</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Humidity:</span>
+                            <span id="humidity">--%</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Wind Speed:</span>
+                            <span id="wind-speed">-- mph</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Pressure:</span>
+                            <span id="pressure">-- hPa</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Visibility:</span>
+                            <span id="visibility">-- mi</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Cloudiness:</span>
+                            <span id="cloudiness">--%</span>
+                        </div>
+                    </div>
+
+                    <div class="sun-times">
+                        <div class="sun-item">
+                            <span>🌅 Sunrise:</span>
+                            <span id="sunrise">--:--</span>
+                        </div>
+                        <div class="sun-item">
+                            <span>🌆 Sunset:</span>
+                            <span id="sunset">--:--</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NASA APOD Section (Right) -->
+            <section class="space-section">
+                <h2>Astronomy Picture of the Day</h2>
+                <div id="apod-loading" class="loading">Loading space image...</div>
+                <div id="apod-error" class="error" style="display: none;"></div>
+                
+                <div id="apod-content" style="display: none;">
+                    <div class="apod-image-container">
+                        <img id="apod-image" src="" alt="Astronomy Picture of the Day">
+                    </div>
+                    <h3 id="apod-title">--</h3>
+                    <p id="apod-date" class="apod-date">--</p>
+                    <p id="apod-explanation" class="apod-explanation">--</p>
+                    <p id="apod-copyright" class="apod-copyright"></p>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <p>Data from OpenWeatherMap & NASA APOD APIs</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

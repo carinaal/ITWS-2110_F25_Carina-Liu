@@ -18,7 +18,10 @@
         <main class="dashboard">
             <!-- Weather Section (Left) -->
             <section class="weather-section">
-                <h2>Current Weather in Troy, NY</h2>
+                <div class="weather-header">
+                    <h2 id="location-title">Current Weather in Troy, NY</h2>
+                    <button id="use-location-btn" class="location-btn">📍 Use My Location</button>
+                </div>
                 <div id="weather-loading" class="loading">Loading weather data...</div>
                 <div id="weather-error" class="error" style="display: none;"></div>
                 

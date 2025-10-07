@@ -1,16 +1,24 @@
 // API Keys 
 const WEATHER_API_KEY = '8a7b49ba213a1c072ac4841884e60e22';
-const NASA_API_KEY = 'Gq9l8yscRIuqQ0IvqfXMWkwYkWdMWXcyR1kdESew'; 
+const NASA_API_KEY = 'Gq9l8yscRIuqQ0IvqfXMWkwYkWdMWXcyR1kdESew';
+
+// Default location
+const DEFAULT_LOCATION = { city: 'Troy', state: 'NY', country: 'US' };
 
 // API URLs
-const WEATHER_URL = `https://api.openweathermap.org/data/2.5/weather?q=Troy,NY,US&appid=${WEATHER_API_KEY}&units=imperial`;
 const NASA_URL = `https://api.nasa.gov/planetary/apod?api_key=${NASA_API_KEY}`;
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', () => {
     setGreeting();
-    fetchWeatherData();
+    fetchWeatherData(); // Fetch default Troy, NY weather
     fetchNASAData();
+    
+    // Add event listener for geolocation button
+    const locationBtn = document.getElementById('use-location-btn');
+    if (locationBtn) {
+        locationBtn.addEventListener('click', useGeolocation);
+    }
 });
 
 // Set time-based greeting
@@ -29,8 +37,96 @@ function setGreeting() {
     document.getElementById('greeting').textContent = greeting;
 }
 
-// Fetch Weather Data
+// Use Geolocation API
+function useGeolocation() {
+    const btn = document.getElementById('use-location-btn');
+    
+    if (!navigator.geolocation) {
+        alert('Geolocation is not supported by your browser');
+        return;
+    }
+    
+    // Disable button while fetching
+    btn.disabled = true;
+    btn.textContent = '📍 Getting location...';
+    
+    navigator.geolocation.getCurrentPosition(
+        // Success callback
+        (position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            fetchWeatherByCoords(lat, lon);
+            btn.textContent = '✅ Using Your Location';
+        },
+        // Error callback
+        (error) => {
+            console.error('Geolocation error:', error);
+            let errorMsg = 'Unable to get your location. ';
+            
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMsg += 'Permission denied. Please allow location access.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMsg += 'Location information unavailable.';
+                    break;
+                case error.TIMEOUT:
+                    errorMsg += 'Location request timed out.';
+                    break;
+                default:
+                    errorMsg += 'An unknown error occurred.';
+            }
+            
+            alert(errorMsg);
+            btn.disabled = false;
+            btn.textContent = '📍 Use My Location';
+            
+            // Fall back to Troy, NY
+            fetchWeatherData();
+        }
+    );
+}
+
+// Fetch Weather Data by Coordinates (for geolocation)
+async function fetchWeatherByCoords(lat, lon) {
+    const WEATHER_URL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}&units=imperial`;
+    
+    const loadingEl = document.getElementById('weather-loading');
+    const errorEl = document.getElementById('weather-error');
+    const contentEl = document.getElementById('weather-content');
+    
+    try {
+        loadingEl.style.display = 'block';
+        contentEl.style.display = 'none';
+        errorEl.style.display = 'none';
+        
+        const response = await fetch(WEATHER_URL);
+        
+        if (!response.ok) {
+            throw new Error(`Weather API Error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        displayWeatherData(data);
+        
+        // Update location title
+        document.getElementById('location-title').textContent = `Current Weather in ${data.name}`;
+        
+        loadingEl.style.display = 'none';
+        contentEl.style.display = 'block';
+        
+    } catch (error) {
+        console.error('Error fetching weather data:', error);
+        loadingEl.style.display = 'none';
+        errorEl.style.display = 'block';
+        errorEl.textContent = `Unable to load weather data. ${error.message}`;
+    }
+}
+
+// Fetch Weather Data (default Troy, NY)
 async function fetchWeatherData() {
+    const WEATHER_URL = `https://api.openweathermap.org/data/2.5/weather?q=Troy,NY,US&appid=${WEATHER_API_KEY}&units=imperial`;
+    
     const loadingEl = document.getElementById('weather-loading');
     const errorEl = document.getElementById('weather-error');
     const contentEl = document.getElementById('weather-content');

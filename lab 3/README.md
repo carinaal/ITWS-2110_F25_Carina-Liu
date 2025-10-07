@@ -17,6 +17,12 @@ A responsive web application that displays current weather information for Troy,
 - Space-themed gradient background
 - Glass morphism design effects
 
+**EXTRA CREDIT**
+**HTML5 Geolocation API (+5 bonus points)**
+  - Click "Use My Location" button to get weather for your current location
+  - Fallback to Troy, NY if location access is denied
+  - Dynamic title updates to show current city name
+
 ## APIs Used
 1. **OpenWeatherMap API** - https://openweathermap.org/api
    - Provides current weather data
@@ -32,6 +38,9 @@ A responsive web application that displays current weather information for Troy,
 - OpenWeatherMap Weather Icons: https://openweathermap.org/weather-conditions
 - NASA APOD API Documentation: https://api.nasa.gov/
 - NASA APOD GitHub: https://github.com/nasa/apod-api
+### Geolocation API - EXTRA CREDIT
+- HTML5 Geolocation API: https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API
+- Geolocation API Guide: https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API/Using_the_Geolocation_API
 
 **Learning Resources**
 - MDN Web Docs - Fetch API: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API

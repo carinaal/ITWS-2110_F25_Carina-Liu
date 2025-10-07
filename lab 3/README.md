@@ -34,9 +34,9 @@ A responsive web application that displays current weather information for Troy,
 - NASA APOD GitHub: https://github.com/nasa/apod-api
 
 **Learning Resources**
-MDN Web Docs - Fetch API: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
-MDN Web Docs - Async/Await: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
-MDN Web Docs - CSS Grid: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout
-MDN Web Docs - CSS Backdrop Filter: https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter
-W3Schools JavaScript Tutorial: https://www.w3schools.com/js/
-W3Schools CSS Tutorial: https://www.w3schools.com/css/
+- MDN Web Docs - Fetch API: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
+- MDN Web Docs - Async/Await: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
+- MDN Web Docs - CSS Grid: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout
+- MDN Web Docs - CSS Backdrop Filter: https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter
+- W3Schools JavaScript Tutorial: https://www.w3schools.com/js/
+- W3Schools CSS Tutorial: https://www.w3schools.com/css/

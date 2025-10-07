@@ -40,3 +40,6 @@ A responsive web application that displays current weather information for Troy,
 - MDN Web Docs - CSS Backdrop Filter: https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter
 - W3Schools JavaScript Tutorial: https://www.w3schools.com/js/
 - W3Schools CSS Tutorial: https://www.w3schools.com/css/
+- JavaScript Array Methods: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
+- JSON Parsing: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse
+- DOM Manipulation: https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model

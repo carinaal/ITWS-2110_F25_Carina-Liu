@@ -28,10 +28,10 @@ A responsive web application that displays current weather information for Troy,
 
 ## Sources
 **APIs and Documentation**
-OpenWeatherMap API Documentation: https://openweathermap.org/current
-OpenWeatherMap Weather Icons: https://openweathermap.org/weather-conditions
-NASA APOD API Documentation: https://api.nasa.gov/
-NASA APOD GitHub: https://github.com/nasa/apod-api
+- OpenWeatherMap API Documentation: https://openweathermap.org/current
+- OpenWeatherMap Weather Icons: https://openweathermap.org/weather-conditions
+- NASA APOD API Documentation: https://api.nasa.gov/
+- NASA APOD GitHub: https://github.com/nasa/apod-api
 
 **Learning Resources**
 MDN Web Docs - Fetch API: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API

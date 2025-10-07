@@ -1,6 +1,13 @@
 # Lab 3 - Troy Weather & Space Dashboard
 A responsive web application that displays current weather information for Troy, NY alongside NASA's Astronomy Picture of the Day.
 
+## How It Works
+- Page loads and fetches default weather data for Troy, NY
+- NASA APOD data is fetched simultaneously
+- Click "Use My Location" button to get weather for your current location
+- All data is parsed from JSON and displayed dynamically
+- Error handling provides user-friendly messages if APIs fail
+
 ## Features
 - Real-time weather data for Troy, NY including:
   - Current temperature and "feels like" temperature

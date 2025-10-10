@@ -1,0 +1,54 @@
+html, body { font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+
+
+body {
+  background: radial-gradient(1200px 600px at 10% -10%, #eef3ff 0, rgba(238,243,255,0) 60%),
+              radial-gradient(1000px 500px at 110% 10%, #f2fff6 0, rgba(242,255,246,0) 55%),
+              #f7f9fc;
+}
+
+.container { max-width: 1100px; }
+
+.card {
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.06);
+  backdrop-filter: saturate(1.2);
+}
+.card h2 { font-weight: 700; }
+.header-accent { font-weight: 800; letter-spacing: 0.3px; }
+.card:hover { transform: translateY(-2px); transition: transform .2s ease; }
+
+.btn { border-radius: 999px; }
+.btn-outline-secondary { border-width: 2px; }
+.btn-primary { box-shadow: 0 6px 14px rgba(46,104,255,.25); }
+.btn:active { transform: translateY(1px); }
+#refreshActivityBtn { width: 100%; }
+
+
+.header-accent {
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+
+.badge-pill { border-radius: 999px; padding: 8px 14px; font-weight: 600; }
+.weather-icon { width: 72px; height: 72px; }
+.muted { color: #6c757d; }
+
+
+.muted {
+  color: #6c757d;
+}
+
+.spin {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+}
+
+
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

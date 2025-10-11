@@ -17,9 +17,43 @@ const fmt = {
   title: s => s ? s.replace(/\b\w/g, c => c.toUpperCase()) : '',
 };
 
+/***** ACTIVITY (Bored API via AppBrewery) *****/
+const ACTIVITY_BASE = "https://bored-api.appbrewery.com";
+let lastActivityPath = "/random"; // remember last weather-based filter
+
+function mapWeatherToActivity(main, tempF) {
+  const t = Number(tempF);
+  const c = (main || "").toLowerCase();
+  if (c.includes("rain") || c.includes("snow") || c.includes("thunder")) return "/filter?type=education";   // indoor
+  if (t >= 72 && (c.includes("clear") || c.includes("cloud"))) return "/filter?type=recreational";          // outdoor-ish
+  if (t <= 40) return "/filter?type=busywork";                                                                // cold day
+  return "/random";
+}
+
+async function fetchActivity(path = "/random") {
+  const res = await fetch(`${ACTIVITY_BASE}${path}`);
+  if (!res.ok) throw new Error(`Activity error ${res.status}`);
+  return res.json();
+}
+
+function renderActivity(a) {
+  const price = a.price === 0 ? "Free" : a.price <= 0.2 ? "$" : a.price <= 0.5 ? "$$" : "$$$";
+  elAct.innerHTML = `
+    <div class="d-flex align-items-start gap-2">
+      <div>
+        <div class="h5 mb-1">${a.activity}</div>
+        <div class="text-secondary">Type: ${a.type} • Participants: ${a.participants} • ${price}</div>
+        ${a.link ? `<a href="${a.link}" target="_blank" rel="noopener">Learn more</a>` : ""}
+      </div>
+    </div>
+  `;
+  btnAgain.disabled = false; // enable “Try another”
+}
+
+
 /***** WEATHER: fetch + render (Troy only for now) *****/
 async function fetchWeatherTroy() {
-  // Build URL like: /weather?q=Troy,NY,US&appid=KEY&units=imperial
+  // --- weather ---
   const url = new URL(OWM_URL);
   url.searchParams.set("q", "Troy,NY,US");
   url.searchParams.set("appid", OWM_API_KEY);
@@ -27,18 +61,30 @@ async function fetchWeatherTroy() {
 
   elWeather.innerHTML = `<p class="muted">Loading weather <span class="spin">⭮</span></p>`;
 
-  const res = await fetch(url);
+  const res = await fetch(url, { mode: "cors" });
   const headers = Object.fromEntries(res.headers.entries());
 
   if (!res.ok) {
-    // Surface helpful message (401 usually means key issue)
     let detail = "";
     try { const j = await res.json(); detail = j.message || ""; } catch {}
     throw new Error(`Weather error ${res.status}${detail ? ": " + detail : ""}`);
   }
 
   const data = await res.json();
-  renderWeather(data, headers);
+  const { main, tempValue } = renderWeather(data, headers);
+
+  // --- activity ---
+  try {
+    lastActivityPath = mapWeatherToActivity(main, tempValue);
+    const activity = await fetchActivity(lastActivityPath);
+    const normalized = normalizeActivity(activity); // handles arrays or objects
+    renderActivity(normalized);
+  } catch (e) {
+    // Show error ONLY in the activity card; keep weather intact
+    elAct.innerHTML = `<div class="alert alert-warning mb-0">Activity unavailable: ${e.message || "network error"}. Try again.</div>`;
+    btnAgain.disabled = false; // let the user retry
+    console.error("Activity fetch failed:", e);
+  }
 }
 
 function renderWeather(data, headers) {
@@ -76,7 +122,7 @@ function renderWeather(data, headers) {
 
   elUpdated.textContent = new Date().toLocaleTimeString();
 
-  // For next step we’ll map weather → activity; leave activity panel as-is for now
+  return { main, tempValue: data.main?.temp ?? 0 };
 }
 
 /***** EVENTS *****/
@@ -100,5 +146,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   } catch (err) {
     console.error(err);
     elWeather.innerHTML = `<div class="alert alert-danger mb-0">${err.message}</div>`;
+  }
+});
+
+btnAgain.addEventListener("click", async () => {
+  try {
+    btnAgain.disabled = true;
+    const activity = await fetchActivity(lastActivityPath); // same filter as last time
+    renderActivity(activity);
+  } catch (e) {
+    elAct.innerHTML = `<div class="alert alert-danger mb-0">${e.message}</div>`;
+  } finally {
+    // renderActivity re-enables on success; re-enable on failure too:
+    btnAgain.disabled = false;
   }
 });

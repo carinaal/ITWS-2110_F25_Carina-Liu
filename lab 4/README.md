@@ -53,8 +53,6 @@
 • Tested code in VS Code and debugged with console errors fed back to AI.
 • Ensured everything was AI-generated (no manual editing).
 
-4. Reflection: While developing this project entirely through AI prompts, several limitations emerged. The AI occasionally produced code that didn’t run correctly on the first try, requiring follow-up prompts to fix issues such as CORS restrictions, asynchronous fetch errors, and styling misalignments. Designing the layout precisely as envisioned also took multiple iterations, since AI-generated CSS often required clarification or fine-tuning. Despite these challenges, I was able to guide the AI step-by-step to debug, improve visuals, and add features like fade animations and weather-reactive backgrounds. This process showed that while AI accelerates development, human direction and iterative problem-solving remain essential for creating polished, functional results.
-
 
 ---
 

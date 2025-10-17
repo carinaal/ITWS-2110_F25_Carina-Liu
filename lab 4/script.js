@@ -160,6 +160,41 @@ function renderActivity(a) {
   btnAgain.disabled = false;
 }
 
+async function fetchWeatherByCoords(lat, lon) {
+  const url = new URL(OWM_URL);
+  url.searchParams.set("lat", String(lat));
+  url.searchParams.set("lon", String(lon));
+  url.searchParams.set("appid", OWM_API_KEY);
+  url.searchParams.set("units", "imperial");
+
+  setHTMLWithFade(elWeather, `<p class="muted">Loading weather for your location <span class="spin">⭮</span></p>`);
+
+  const res = await fetch(url, { mode: "cors" });
+  const headers = Object.fromEntries(res.headers.entries());
+
+  if (!res.ok) {
+    let detail = "";
+    try { const j = await res.json(); detail = j.message || ""; } catch {}
+    throw new Error(`Weather error ${res.status}${detail ? ": " + detail : ""}`);
+  }
+
+  const data = await res.json();
+  const { main, tempValue } = renderWeather(data, headers);
+
+  // keep weather-reactive background
+  document.body.dataset.wx = (main || "").toLowerCase();
+
+  // activity based on your local weather
+  try {
+    lastActivityPath = mapWeatherToActivity(main, tempValue);
+    const activity = await fetchActivityWithFallback(lastActivityPath);
+    renderActivity(activity);
+  } catch (e) {
+    elAct.innerHTML = `<div class="alert alert-warning mb-0">Activity unavailable: ${e.message || "network error"}.</div>`;
+    btnAgain.disabled = false;
+    console.error("Activity fetch failed:", e);
+  }
+}
 
 /***** WEATHER: fetch + render (Troy only for now) *****/
 async function fetchWeatherTroy() {
@@ -184,7 +219,6 @@ async function fetchWeatherTroy() {
   const { main, tempValue } = renderWeather(data, headers);
   document.body.dataset.wx = (main || "").toLowerCase();
   console.log("[wx tag]", document.body.dataset.wx);
-  delete document.body.dataset.wx;
 
   // --- activity ---
   try {
@@ -266,4 +300,37 @@ btnAgain.addEventListener("click", async () => {
   } finally {
     btnAgain.disabled = false;
   }
+});
+
+btnGeo.addEventListener("click", async () => {
+  if (!navigator.geolocation) {
+    elWeather.innerHTML = `<div class="alert alert-danger mb-0">Geolocation not supported by your browser.</div>`;
+    return;
+  }
+
+  // simple UI state
+  const prevHTML = elWeather.innerHTML;
+  setHTMLWithFade(elWeather, `<p class="muted">Requesting your location… <span class="spin">⭮</span></p>`);
+
+  const onSuccess = async pos => {
+    const { latitude, longitude } = pos.coords;
+    try {
+      await fetchWeatherByCoords(latitude, longitude);
+    } catch (err) {
+      console.error(err);
+      elWeather.innerHTML = `<div class="alert alert-danger mb-0">${err.message}</div>`;
+    }
+  };
+
+  const onError = err => {
+    console.error(err);
+    elWeather.innerHTML = prevHTML;
+    elAct.innerHTML = `<div class="alert alert-warning mb-0">Couldn’t get your location (${err.code}): ${err.message}</div>`;
+  };
+
+  navigator.geolocation.getCurrentPosition(onSuccess, onError, {
+    enableHighAccuracy: true,
+    timeout: 10000,
+    maximumAge: 0
+  });
 });

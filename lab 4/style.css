@@ -1,54 +1,261 @@
-html, body { font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-
-
-body {
-  background: radial-gradient(1200px 600px at 10% -10%, #eef3ff 0, rgba(238,243,255,0) 60%),
-              radial-gradient(1000px 500px at 110% 10%, #f2fff6 0, rgba(242,255,246,0) 55%),
-              #f7f9fc;
+/* Typography */
+html, body {
+  font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
-.container { max-width: 1100px; }
+/* ---------------- Theme & Background (base) ---------------- */
+:root{
+  --bg: #f6f8ff;
+  --card: #ffffffcc;            /* translucent “glass” */
+  --text: #0e1222;
+  --muted: #6b7280;
+  --ring: #6aa5ff;
+  --brand1: #7ea1ff;
+  --brand2: #8ef3d1;
+  --shadow: 0 26px 60px rgba(14,18,34,.12);
+}
 
+html, body { color: var(--text); background: var(--bg); }
+
+/* Soft gradient blobs (default) */
+body::before,
+body::after{
+  content:""; position: fixed; inset: -20%;
+  background:
+    radial-gradient(700px 400px at 10% 0%, rgba(126,161,255,.35), transparent 60%),
+    radial-gradient(700px 400px at 100% 15%, rgba(142,243,209,.30), transparent 60%);
+  z-index: -1; pointer-events:none; filter: blur(6px);
+  transition: background .35s ease;
+}
+
+/* Weather-reactive backgrounds (set via body.dataset.wx) */
+body[data-wx="clear"]::before,
+body[data-wx="clear"]::after{
+  background:
+    radial-gradient(720px 440px at 15% -5%, rgba(255,210,110,.55), transparent 60%),
+    radial-gradient(720px 440px at 110% 15%, rgba(255,140,90,.38), transparent 60%);
+}
+
+body[data-wx*="cloud"]::before,
+body[data-wx*="cloud"]::after{
+  background:
+    radial-gradient(740px 460px at 10% -2%, rgba(160,185,220,.55), transparent 60%),
+    radial-gradient(740px 460px at 105% 12%, rgba(200,215,240,.45), transparent 60%);
+}
+
+body[data-wx*="rain"]::before,
+body[data-wx*="drizzle"]::before,
+body[data-wx*="thunder"]::before,
+body[data-wx*="snow"]::before,
+body[data-wx*="rain"]::after,
+body[data-wx*="drizzle"]::after,
+body[data-wx*="thunder"]::after,
+body[data-wx*="snow"]::after{
+  background:
+    radial-gradient(740px 460px at 10% 0%, rgba(90,120,170,.60), transparent 60%),
+    radial-gradient(740px 460px at 105% 10%, rgba(120,145,190,.50), transparent 60%);
+}
+
+body[data-wx*="mist"]::before,
+body[data-wx*="fog"]::before,
+body[data-wx*="haze"]::before,
+body[data-wx*="mist"]::after,
+body[data-wx*="fog"]::after,
+body[data-wx*="haze"]::after{
+  background:
+    radial-gradient(740px 460px at 12% -4%, rgba(200,210,220,.55), transparent 60%),
+    radial-gradient(740px 460px at 102% 10%, rgba(210,220,230,.50), transparent 60%);
+}
+
+/* Layout: make the canvas wider so cards can grow */
+.container { max-width: 1240px; }
+
+/* ---------------- Header (centered, more interesting) ---------------- */
+header { 
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  text-align: center;
+}
+
+/* Fancy title */
+.header-accent{
+  font-weight: 900;
+  letter-spacing:.4px;
+  line-height: 1.1;
+  font-size: clamp(1.8rem, 2.6vw, 2.4rem);
+  background: conic-gradient(from 210deg, #12192e, #1b2850 30%, #2a3a7d 55%, #2f725e 85%, #12192e);
+  -webkit-background-clip:text; background-clip:text; color: transparent;
+  text-shadow: 0 2px 18px rgba(46,104,255,.08);
+}
+
+/* Put the buttons under the title & centered */
+header .d-flex { justify-content: center; }
+
+/* ---------------- Cards ---------------- */
 .card {
   border: none;
-  border-radius: 20px;
-  box-shadow: 0 18px 40px rgba(0,0,0,0.06);
+  border-radius: 24px;
+  box-shadow: 0 22px 45px rgba(0, 0, 0, 0.07);
   backdrop-filter: saturate(1.2);
+  padding: 2rem 2.25rem;
+  min-height: 380px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
-.card h2 { font-weight: 700; }
-.header-accent { font-weight: 800; letter-spacing: 0.3px; }
-.card:hover { transform: translateY(-2px); transition: transform .2s ease; }
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.1);
+}
+.card h2 { font-weight: 800; }
+/* Make weather and activity cards equal width */
+#weatherCard, #activityCard {
+  flex: 1 1 48%;
+}
 
-.btn { border-radius: 999px; }
-.btn-outline-secondary { border-width: 2px; }
-.btn-primary { box-shadow: 0 6px 14px rgba(46,104,255,.25); }
+/* ---------------- Buttons ---------------- */
+.btn { border-radius: 999px; padding:.58rem 1.05rem; transition: transform .06s ease, box-shadow .12s ease; }
 .btn:active { transform: translateY(1px); }
-#refreshActivityBtn { width: 100%; }
+.btn-outline-secondary { border-width: 2px; }
+.btn-primary{
+  border:0;
+  background: linear-gradient(90deg, var(--brand1), var(--brand2));
+  box-shadow: 0 10px 24px rgba(106,165,255,.28);
+}
+.btn-primary:hover{ filter: brightness(1.05); }
+.btn:focus-visible{ outline: none; box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--ring); }
 
+/* Make the “Try another” button full-width for balance */
+#refreshActivityBtn {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.75rem;
+  background: linear-gradient(90deg, #5a74ff, #7fc9ff);
+  color: white;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border-radius: 50px;
+  padding: 0.45rem 1rem;
+  border: none;
+  box-shadow: 0 6px 14px rgba(46, 104, 255, 0.25);
+  transition: all 0.25s ease;
+}
+#refreshActivityBtn:hover {
+  background: linear-gradient(90deg, #4e69f5, #6ec0f5);
+  transform: translateY(-2px);
+}
+#refreshActivityBtn:active {
+  transform: translateY(1px);
+}
 
-.header-accent {
+/* Make sure the container for the button is positioned */
+#activityCard {
+  position: relative;
+}
+
+/* === SUBTEXT (de-emphasize the "We'll tailor this" text) === */
+#activityCard p.muted {
+  font-size: 0.85rem;
+  color: #a0a0a0;
+  margin-bottom: 0.25rem;
+  opacity: 0.7;
+}
+
+/* ---------------- Weather bits ---------------- */
+.badge-pill { border-radius: 999px; padding: 9px 16px; font-weight: 800; }
+.weather-icon { width: 76px; height: 76px; opacity:.92; }
+.muted { color: var(--muted); }
+
+/* Loading spinner */
+.spin { display: inline-block; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------------- Fade-in animation ---------------- */
+.fade-in { opacity: 0; transform: translateY(6px); animation: fadeIn .35s ease-out forwards; }
+@keyframes fadeIn { to { opacity: 1; transform: none; } }
+
+/* ---------------- Activity aesthetics ---------------- */
+/* title + emoji badge */
+.activity-title {
+  font-size: 1.65rem;
   font-weight: 800;
-  letter-spacing: 0.3px;
+  margin: 0.5rem 0 1rem;
+  color: #1b1f24;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.activity-emoji {
+  font-size: 1.75rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
 }
 
-.badge-pill { border-radius: 999px; padding: 8px 14px; font-weight: 600; }
-.weather-icon { width: 72px; height: 72px; }
-.muted { color: #6c757d; }
-
-
-.muted {
-  color: #6c757d;
+.activity-meta {
+  margin-top: 0.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
-.spin {
+/* tag pills */
+.pill {
   display: inline-block;
-  animation: spin 1s linear infinite;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.pill-green {
+  background: #e9f6ee;
+  color: #167c3c;
+}
+.pill-gray {
+  background: #eef1f5;
+  color: #495057;
 }
 
+/* divider under tags */
+.activity-meta + .mt-3{ margin-top:1rem !important; }
+.activity-meta::after{
+  content:""; display:block; height:8px; border-radius:999px;
+  background: linear-gradient(90deg, #e6eaf3, #ecf2ff);
+  margin-top: .9rem;
+}
 
+/* === COST BAR === */
+.price-meter {
+  height: 10px;
+  border-radius: 999px;
+  background: #eef1f5;
+  margin-top: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.price-meter > span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0%;
+  background: linear-gradient(90deg, #93b7ff, #6aa5ff);
+  border-radius: inherit;
+  transition: width 0.4s ease;
+}
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+/* === IMPROVED HEADLINE CENTER === */
+h1 {
+  font-weight: 900;
+  font-size: 2.25rem;
+  text-align: center;
+  margin-bottom: 1.8rem;
+  background: linear-gradient(90deg, #253c7a, #4f7efb, #4bd2ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+/* ---------------- Responsive tweaks ---------------- */
+@media (min-width: 992px){
+  /* keep two big columns comfy on wide screens */
+  .row.g-4 > [class*="col-"] .card { min-height: 360px; }
+}
+@media (max-width: 992px){
+  header { gap: 10px; }
+  .card{ border-radius:20px; min-height: 280px; }
+  .activity-title{ font-size:1.3rem; }
 }

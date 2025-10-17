@@ -18,7 +18,10 @@ const fmt = {
 };
 
 /***** ACTIVITY (Bored API via AppBrewery) *****/
-const ACTIVITY_BASE = "https://bored-api.appbrewery.com";
+const ACTIVITY_BASES = [
+  "https://bored-api.appbrewery.com",   // primary
+  "https://www.boredapi.com"            // fallback
+];
 let lastActivityPath = "/random"; // remember last weather-based filter
 
 function mapWeatherToActivity(main, tempF) {
@@ -30,10 +33,35 @@ function mapWeatherToActivity(main, tempF) {
   return "/random";
 }
 
-async function fetchActivity(path = "/random") {
-  const res = await fetch(`${ACTIVITY_BASE}${path}`);
-  if (!res.ok) throw new Error(`Activity error ${res.status}`);
-  return res.json();
+function normalizeActivity(payload) {
+  // /random => object; /filter?... (AppBrewery) => array
+  if (Array.isArray(payload)) {
+    if (payload.length === 0) throw new Error("No activities found for this filter");
+    return payload[Math.floor(Math.random() * payload.length)];
+  }
+  return payload;
+}
+
+async function fetchActivityWithFallback(path = "/random") {
+  // Try each base; on network/CORS failure, fall through; on HTTP error, throw
+  let lastError;
+  for (const base of ACTIVITY_BASES) {
+    try {
+      // For boredapi.com the equivalent random is /api/activity and the filter is identical
+      const url = base.includes("boredapi.com")
+        ? (path === "/random" ? `${base}/api/activity` : `${base}/api/activity${path.replace("/filter","")}`)
+        : `${base}${path}`;
+
+      const res = await fetch(url, { mode: "cors" });
+      if (!res.ok) throw new Error(`Activity error ${res.status}`);
+      const data = await res.json();
+      return normalizeActivity(data);
+    } catch (e) {
+      lastError = e;
+      // continue to next base
+    }
+  }
+  throw lastError || new Error("Activity fetch failed");
 }
 
 function renderActivity(a) {
@@ -47,7 +75,7 @@ function renderActivity(a) {
       </div>
     </div>
   `;
-  btnAgain.disabled = false; // enable “Try another”
+  btnAgain.disabled = false;
 }
 
 
@@ -76,13 +104,11 @@ async function fetchWeatherTroy() {
   // --- activity ---
   try {
     lastActivityPath = mapWeatherToActivity(main, tempValue);
-    const activity = await fetchActivity(lastActivityPath);
-    const normalized = normalizeActivity(activity); // handles arrays or objects
-    renderActivity(normalized);
+    const activity = await fetchActivityWithFallback(lastActivityPath);
+    renderActivity(activity);
   } catch (e) {
-    // Show error ONLY in the activity card; keep weather intact
     elAct.innerHTML = `<div class="alert alert-warning mb-0">Activity unavailable: ${e.message || "network error"}. Try again.</div>`;
-    btnAgain.disabled = false; // let the user retry
+    btnAgain.disabled = false;
     console.error("Activity fetch failed:", e);
   }
 }
@@ -94,12 +120,6 @@ function normalizeActivity(payload) {
     return payload[Math.floor(Math.random() * payload.length)];
   }
   return payload;
-}
-
-async function fetchActivity(path = "/random") {
-  const res = await fetch(`${ACTIVITY_BASE}${path}`, { mode: "cors" });
-  if (!res.ok) throw new Error(`Activity error ${res.status}`);
-  return res.json();
 }
 
 
@@ -168,12 +188,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 btnAgain.addEventListener("click", async () => {
   try {
     btnAgain.disabled = true;
-    const activity = await fetchActivity(lastActivityPath); // same filter as last time
+    const activity = await fetchActivityWithFallback(lastActivityPath || "/random");
     renderActivity(activity);
   } catch (e) {
-    elAct.innerHTML = `<div class="alert alert-danger mb-0">${e.message}</div>`;
+    elAct.innerHTML = `<div class="alert alert-danger mb-0">Still couldn’t get an activity. Please try again.</div>`;
   } finally {
-    // renderActivity re-enables on success; re-enable on failure too:
     btnAgain.disabled = false;
   }
 });

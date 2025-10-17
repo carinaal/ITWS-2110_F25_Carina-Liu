@@ -87,6 +87,22 @@ async function fetchWeatherTroy() {
   }
 }
 
+function normalizeActivity(payload) {
+  // /random => object; /filter?... => array of activities
+  if (Array.isArray(payload)) {
+    if (payload.length === 0) throw new Error("No activities found for this filter");
+    return payload[Math.floor(Math.random() * payload.length)];
+  }
+  return payload;
+}
+
+async function fetchActivity(path = "/random") {
+  const res = await fetch(`${ACTIVITY_BASE}${path}`, { mode: "cors" });
+  if (!res.ok) throw new Error(`Activity error ${res.status}`);
+  return res.json();
+}
+
+
 function renderWeather(data, headers) {
   const name = `${data.name}, ${data.sys?.country ?? ""}`.trim();
   const main = data.weather?.[0]?.main || "";

@@ -42,23 +42,35 @@ function normalizeActivity(payload) {
   return payload;
 }
 
+// Generic JSON fetch with a CORS fallback (uses AllOrigins if direct CORS fails)
+async function fetchJSONWithCorsFallback(url) {
+  try {
+    const res = await fetch(url, { mode: "cors" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    // Try a public proxy as a last resort (OK for class projects)
+    const proxied = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+    const res2 = await fetch(proxied); // no CORS needed here
+    if (!res2.ok) throw new Error(`Proxy HTTP ${res2.status}`);
+    return await res2.json();
+  }
+}
+
 async function fetchActivityWithFallback(path = "/random") {
-  // Try each base; on network/CORS failure, fall through; on HTTP error, throw
   let lastError;
   for (const base of ACTIVITY_BASES) {
     try {
-      // For boredapi.com the equivalent random is /api/activity and the filter is identical
+      // Official boredapi.com uses /api/activity for random; filters via query params.
       const url = base.includes("boredapi.com")
-        ? (path === "/random" ? `${base}/api/activity` : `${base}/api/activity${path.replace("/filter","")}`)
+        ? (path === "/random" ? `${base}/api/activity`
+                              : `${base}/api/activity${path.replace("/filter","")}`)
         : `${base}${path}`;
 
-      const res = await fetch(url, { mode: "cors" });
-      if (!res.ok) throw new Error(`Activity error ${res.status}`);
-      const data = await res.json();
+      const data = await fetchJSONWithCorsFallback(url);
       return normalizeActivity(data);
     } catch (e) {
       lastError = e;
-      // continue to next base
     }
   }
   throw lastError || new Error("Activity fetch failed");
@@ -112,16 +124,6 @@ async function fetchWeatherTroy() {
     console.error("Activity fetch failed:", e);
   }
 }
-
-function normalizeActivity(payload) {
-  // /random => object; /filter?... => array of activities
-  if (Array.isArray(payload)) {
-    if (payload.length === 0) throw new Error("No activities found for this filter");
-    return payload[Math.floor(Math.random() * payload.length)];
-  }
-  return payload;
-}
-
 
 function renderWeather(data, headers) {
   const name = `${data.name}, ${data.sys?.country ?? ""}`.trim();
